@@ -1,0 +1,16 @@
+{
+  "name": "daily-voice-training",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Builds writing and voice rules that sound like one person, from their samples and their edits to daily drafts.",
+  "type": "module",
+  "bin": { "voice": "bin/voice.mjs" },
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node bin/voice.mjs serve",
+    "test": "node --test test/*.test.mjs"
+  },
+  "optionalDependencies": {
+    "@anthropic-ai/sdk": "1.3.0"
+  }
+}

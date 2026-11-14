@@ -1,0 +1,8 @@
+[
+  { "id": "tweet", "label": "Tweet", "guide": "One post for X. 280 characters at most. One idea. No hashtags unless the samples use them." },
+  { "id": "thread", "label": "Thread", "guide": "A thread for X of 4 to 8 posts, each 280 characters at most, separated by a blank line. The first post carries the idea by itself." },
+  { "id": "linkedin-post", "label": "LinkedIn post", "guide": "A LinkedIn post of 120 to 250 words. The first two lines must make sense before the reader clicks to expand." },
+  { "id": "instagram-caption", "label": "Instagram caption", "guide": "An Instagram caption of 80 to 200 words that adds an angle a photo or carousel would leave out. End with one plain invitation to reply or act, if the samples do that." },
+  { "id": "email-broadcast", "label": "Email broadcast", "guide": "One email to the whole list. First line: 'Subject: ...' (under 50 characters). Then the body, 150 to 350 words, written to one reader, with a single link or ask." },
+  { "id": "long-form", "label": "Long-form paragraph", "guide": "One full paragraph of 150 to 250 words, of the kind that sits in a newsletter, an essay or a sales page." }
+]

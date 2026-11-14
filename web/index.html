@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Daily Voice Training</title>
+<style>
+  :root {
+    --bg: #f6f3ec; --card: #fffdf8; --ink: #1d1b16; --soft: #5c574c; --line: #ddd6c6;
+    --accent: #1f5c4a; --accent-ink: #ffffff; --warn: #8a3b12; --good: #1f5c4a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14130f; --card: #1d1b16; --ink: #f5f2ea; --soft: #c2bcae; --line: #37332a;
+      --accent: #7fd1b5; --accent-ink: #10231c; --warn: #f0a878; --good: #7fd1b5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 780px; margin: 0 auto; padding: 28px 16px 96px; }
+  h1 { font-size: 22px; margin: 0 0 20px; letter-spacing: -0.2px; }
+  h2 { font-size: 17px; margin: 0 0 8px; }
+  label { display: block; font-size: 14px; color: var(--soft); margin: 14px 0 6px; }
+  input[type=text], select, textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+    background: var(--card); color: var(--ink); font: inherit;
+  }
+  textarea { min-height: 150px; resize: vertical; }
+  textarea.piece { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.65; }
+  textarea.mono { font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 420px; }
+  button {
+    font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .bar { display: grid; grid-template-columns: 190px 1fr auto; gap: 8px; margin-bottom: 18px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+  .tabs button { border: 0; background: none; border-radius: 0; padding: 8px 12px; color: var(--soft); font-weight: 500; }
+  .tabs button[aria-selected=true] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+  .meta { font-size: 14px; color: var(--soft); margin-bottom: 10px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .learned { margin: 12px 0 0; padding: 0 0 0 18px; font-size: 15px; color: var(--good); }
+  .flag { color: var(--warn); font-size: 14px; margin-top: 8px; }
+  .status { position: sticky; top: 0; z-index: 2; padding: 10px 14px; margin-bottom: 16px; border-radius: 8px;
+    background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .error { background: var(--warn); color: #fff; }
+  .checks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+  .checks label { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--ink); font-size: 15px; }
+  details { border-top: 1px solid var(--line); padding: 10px 0; }
+  summary { cursor: pointer; }
+  pre { white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; margin: 8px 0 0; }
+  .hint { font-size: 14px; color: var(--soft); margin: 6px 0 0; }
+  [hidden] { display: none !important; }
+  @media (max-width: 560px) { .bar { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Daily Voice Training</h1>
+  <div id="status" class="status" role="status" hidden></div>
+
+  <section id="setup" hidden>
+    <div class="card">
+      <h2>Build your voice rules</h2>
+      <p class="hint">The rules are extracted from your own writing. Unedited pieces work better than polished ones.</p>
+      <label for="s-name">Your name</label>
+      <input type="text" id="s-name" autocomplete="name">
+      <label for="s-context">About you and your readers</label>
+      <textarea id="s-context"></textarea>
+      <label for="s-samples">10 to 20 pieces of your own writing. Put a line with three dashes (---) between pieces.</label>
+      <textarea id="s-samples" style="min-height:260px" placeholder="A post that did well&#10;---&#10;An email a friend replied to&#10;---&#10;A voice note transcript"></textarea>
+      <p class="hint" id="s-have"></p>
+      <label>What the daily draft rotates through</label>
+      <div class="checks" id="s-formats"></div>
+      <div class="row"><button class="primary" id="s-go">Build my voice rules</button></div>
+    </div>
+  </section>
+
+  <section id="app" hidden>
+    <div class="bar">
+      <select id="d-format" aria-label="Format"></select>
+      <input type="text" id="d-topic" placeholder="Topic (leave empty and one is picked for you)" aria-label="Topic">
+      <button class="primary" id="d-go">New draft</button>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" data-tab="drafts" aria-selected="true">Drafts</button>
+      <button role="tab" data-tab="rules" aria-selected="false">Rules</button>
+      <button role="tab" data-tab="topics" aria-selected="false">Topics</button>
+      <button role="tab" data-tab="log" aria-selected="false">Rule changes</button>
+    </div>
+    <div id="tab-drafts"></div>
+    <div id="tab-rules" hidden>
+      <textarea class="mono" id="r-voice" aria-label="Voice rules"></textarea>
+      <div class="row"><button id="r-save">Save rules</button></div>
+    </div>
+    <div id="tab-topics" hidden>
+      <p class="hint">One idea per line, written as "- [ ] the idea". The daily draft takes the first open line.</p>
+      <textarea class="mono" id="t-text" style="min-height:260px" aria-label="Topics"></textarea>
+      <div class="row"><button id="t-save">Save topics</button></div>
+    </div>
+    <div id="tab-log" hidden><pre id="l-text"></pre></div>
+  </section>
+</main>
+
+<script>
+  var state = null;
+  var working = false;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function el(tag, props, kids) {
+    var n = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) {
+      if (k === 'text') n.textContent = props[k];
+      else if (k === 'on') Object.keys(props.on).forEach(function (e) { n.addEventListener(e, props.on[e]); });
+      else n.setAttribute(k, props[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+
+  function say(text, isError) {
+    var s = $('status');
+    s.hidden = !text;
+    s.textContent = text || '';
+    s.className = 'status' + (isError ? ' error' : '');
+  }
+
+  function lock(on) {
+    working = on;
+    document.querySelectorAll('button').forEach(function (b) { if (b.getAttribute('role') !== 'tab') b.disabled = on; });
+  }
+
+  async function api(path, payload, label) {
+    if (payload !== undefined) { lock(true); say(label + '\u2026 this takes up to a minute.'); }
+    try {
+      var res = await fetch(path, payload === undefined ? {} : {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Request failed.');
+      if (payload !== undefined) say('');
+      return data;
+    } catch (e) {
+      say(e.message, true);
+      throw e;
+    } finally {
+      if (payload !== undefined) lock(false);
+    }
+  }
+
+  async function load(keepFields) {
+    state = await api('/api/state');
+    render(keepFields);
+  }
+
+  function render(keepFields) {
+    var st = state.status;
+    $('setup').hidden = st.foundation;
+    $('app').hidden = !st.foundation;
+    if (!st.foundation) {
+      if (!keepFields) {
+        $('s-name').value = st.name || '';
+        $('s-context').value = state.context || '';
+      }
+      $('s-have').textContent = st.samples ? st.samples + ' piece(s) already saved in voice/samples. Anything pasted here is added to them.' : '';
+      var box = $('s-formats');
+      if (!box.children.length) st.formats.forEach(function (f) {
+        var input = el('input', { type: 'checkbox', value: f.id });
+        input.checked = f.daily;
+        box.appendChild(el('label', {}, [input, document.createTextNode(f.label)]));
+      });
+      return;
+    }
+    var sel = $('d-format');
+    if (!sel.children.length) st.formats.forEach(function (f) { sel.appendChild(el('option', { value: f.id, text: f.label })); });
+    if (!keepFields) {
+      $('r-voice').value = state.voice;
+      $('t-text').value = state.topics;
+    }
+    $('l-text').textContent = state.log;
+    renderDrafts();
+  }
+
+  function labelOf(id) {
+    var f = state.status.formats.filter(function (x) { return x.id === id; })[0];
+    return f ? f.label : id;
+  }
+
+  function learnedList(d) {
+    var items = [];
+    (d.lessons || []).forEach(function (l) { items.push(el('li', { text: l })); });
+    (d.changes || []).forEach(function (c) {
+      items.push(el('li', { text: 'Rule ' + c.done + ' in \u201c' + c.section + '\u201d: ' + (c.done === 'removed' ? c.old : c.text) }));
+    });
+    if (d.learnError) items.push(el('li', { text: d.learnError }));
+    return items.length ? el('ul', { class: 'learned' }, items) : null;
+  }
+
+  function renderDrafts() {
+    var root = $('tab-drafts');
+    root.textContent = '';
+    var pending = state.drafts.filter(function (d) { return d.status === 'pending'; });
+    var done = state.drafts.filter(function (d) { return d.status !== 'pending'; });
+    if (!state.drafts.length) root.appendChild(el('p', { class: 'hint', text: 'No drafts yet. Press New draft.' }));
+
+    pending.forEach(function (d) {
+      var text = el('textarea', { class: 'piece', 'aria-label': 'Draft text' });
+      text.value = d.draft;
+      text.style.minHeight = Math.min(520, 90 + d.draft.split('\n').length * 30 + d.draft.length / 3) + 'px';
+      var note = el('input', { type: 'text', placeholder: 'What should change, or why this is off (optional)', 'aria-label': 'Feedback' });
+      var act = function (action) {
+        return async function () {
+          if (action !== 'accept' && !note.value.trim() && text.value.trim() === d.draft.trim()) {
+            say('Edit the text or write a note first, so there is something to learn from.', true);
+            return;
+          }
+          await api('/api/feedback', { id: d.id, action: action, final: text.value, note: note.value },
+            action === 'rewrite' ? 'Learning from your feedback and rewriting' : 'Learning from your feedback');
+          await load();
+        };
+      };
+      root.appendChild(el('div', { class: 'card' }, [
+        el('div', { class: 'meta', text: labelOf(d.format) + ' \u00b7 ' + d.topic }),
+        text,
+        d.problems && d.problems.length ? el('div', { class: 'flag', text: 'Still flagged: ' + d.problems.map(function (x) { return x.term; }).join(', ') }) : null,
+        el('label', { text: 'Feedback' }),
+        note,
+        el('div', { class: 'row' }, [
+          el('button', { class: 'primary', text: 'Accept', on: { click: act('accept') } }),
+          el('button', { text: 'Rewrite it', on: { click: act('rewrite') } }),
+          el('button', { text: 'Reject', on: { click: act('reject') } })
+        ]),
+        el('p', { class: 'hint', text: 'Edit the text directly before accepting. Your edits and your note update the rules.' })
+      ]));
+    });
+
+    done.forEach(function (d) {
+      root.appendChild(el('details', {}, [
+        el('summary', { text: d.status + ' \u00b7 ' + labelOf(d.format) + ' \u00b7 ' + d.topic }),
+        el('pre', { text: d.final || d.edited || d.draft }),
+        d.note ? el('p', { class: 'hint', text: 'Your note: ' + d.note }) : null,
+        learnedList(d)
+      ]));
+    });
+  }
+
+  document.querySelectorAll('.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.tabs button').forEach(function (o) {
+        o.setAttribute('aria-selected', String(o === b));
+        $('tab-' + o.dataset.tab).hidden = o !== b;
+      });
+    });
+  });
+
+  $('s-go').addEventListener('click', async function () {
+    var picked = Array.prototype.map.call(document.querySelectorAll('#s-formats input:checked'), function (i) { return i.value; });
+    await api('/api/setup', {
+      name: $('s-name').value, context: $('s-context').value, samples: $('s-samples').value, formats: picked
+    }, 'Reading your samples and writing the rules');
+    await load();
+  });
+
+  $('d-go').addEventListener('click', async function () {
+    await api('/api/draft', { format: $('d-format').value, topic: $('d-topic').value }, 'Writing a draft');
+    $('d-topic').value = '';
+    await load();
+  });
+
+  $('r-save').addEventListener('click', async function () {
+    await api('/api/voice', { voice: $('r-voice').value }, 'Saving');
+    await load();
+  });
+
+  $('t-save').addEventListener('click', async function () {
+    await api('/api/topics', { topics: $('t-text').value }, 'Saving');
+    await load();
+  });
+
+  // Pick up the daily draft when it lands, without wiping anything being typed.
+  setInterval(function () {
+    if (working || document.hidden) return;
+    var typing = document.activeElement && /TEXTAREA|INPUT/.test(document.activeElement.tagName);
+    fetch('/api/state').then(function (r) { return r.json(); }).then(function (next) {
+      if (!state || working || typing) return;
+      if (next.drafts.length !== state.drafts.length || next.status.foundation !== state.status.foundation) {
+        state = next;
+        render(true);
+      }
+    }).catch(function () {});
+  }, 60000);
+
+  load();
+</script>
+</body>
+</html>
