@@ -3,3 +3,6 @@ node_modules/
 *.tmp-*
 voice/.daily.lock
 voice/.server.log
+
+# Your writing and rules. A fork of a public repository is public.
+/voice/

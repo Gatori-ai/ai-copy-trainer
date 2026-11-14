@@ -113,7 +113,7 @@ voice/
 
 `voice/VOICE.md` is plain text. Load it, with `rules/ai-tells.md`, in any other tool that writes for you.
 
-The page listens on your own computer only. Your writing goes to the model that writes the drafts and nowhere else. If you keep your copy of this folder in git, keep that repository private.
+The page listens on your own computer only. Your writing goes to the model that writes the drafts and nowhere else. `voice/` is listed in `.gitignore`, so your writing stays out of this repository and out of any fork of it. To keep a history of your rules, put `voice/` in a private repository of its own, or point `VOICE_HOME` at a folder that already is one.
 
 ## Repository map
 
