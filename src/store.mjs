@@ -63,7 +63,7 @@ export function loadConfig() {
   try {
     saved = JSON.parse(read(p.config(), '{}'));
   } catch {
-    throw new Error(`${p.config()} is not valid JSON. Fix it or delete it and run "voice init".`);
+    throw new Error(`${p.config()} is not valid JSON. Fix it or delete it and run "trainer init".`);
   }
   return {
     ...DEFAULT_CONFIG,

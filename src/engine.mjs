@@ -159,7 +159,7 @@ async function writeChecked({ fmt, topic, note, previous, complete, config }) {
 export async function draft({ format: formatId, topic, source = 'button', complete = realComplete } = {}) {
   const config = store.loadConfig();
   if (!store.hasFoundation()) {
-    throw new Error('No voice/VOICE.md yet. Build the foundation first: add samples, then run "voice foundation".');
+    throw new Error('No voice/VOICE.md yet. Build the foundation first: add samples, then run "trainer foundation".');
   }
   const fmt = store.format(formatId || config.formats[0], config);
   const result = await writeChecked({ fmt, topic: (topic || '').trim() || null, complete, config });

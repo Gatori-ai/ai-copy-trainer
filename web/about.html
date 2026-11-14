@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About AI Copy Trainer</title>
+<meta name="description" content="AI Copy Trainer builds writing rules from your own writing, then sharpens them every time you edit a draft.">
+<link rel="icon" type="image/png" href="/assets/gatori-enso.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/ink.css">
+<style>
+  main { max-width: 720px; }
+  .hero { padding: 34px 0 10px; }
+  .hero h1 { font-size: clamp(32px, 4.2vw, 52px); line-height: 1.08; margin: 0 0 16px; }
+  .hero p { font-size: 22px; margin: 0 0 24px; max-width: 34em; }
+  .go { display: inline-block; background: var(--red); color: var(--on-red); padding: 11px 22px; border-radius: 3px; text-decoration: none; }
+  section { padding: 34px 0 0; }
+  section h2 { font-size: 30px; margin: 0 0 12px; }
+  section p { margin: 0 0 14px; }
+  figure { margin: 22px 0 0; }
+  figure img { width: 100%; height: auto; border: 1px solid var(--line-strong); border-radius: 4px; display: block; }
+  .night { display: none; }
+  ol.steps { padding: 0; margin: 18px 0 0; list-style: none; counter-reset: s; }
+  ol.steps li { counter-increment: s; padding: 16px 0 16px 54px; border-top: 1px solid var(--line); position: relative; }
+  ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 12px; font-size: 34px; color: var(--red); line-height: 1; }
+  ol.steps b { color: var(--ink); font-weight: 600; }
+  dl { margin: 14px 0 0; }
+  dt { font: 15px/1.5 var(--mono); color: var(--ink); margin-top: 14px; }
+  dd { margin: 2px 0 0; }
+  code { font: 15px/1.5 var(--mono); background: var(--paper); border: 1px solid var(--line); padding: 1px 6px; border-radius: 3px; }
+  blockquote { margin: 16px 0; padding: 14px 20px; border-left: 3px solid var(--red); background: var(--paper); color: var(--ink); font-size: 21px; }
+  @media (prefers-color-scheme: dark) { .paper { display: none; } .night { display: block; } }
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <img class="mark" src="/assets/gatori-enso.png" alt="" width="44" height="44">
+    <a class="name" href="/">AI Copy Trainer<i>.</i></a>
+    <nav><a href="/">Open the trainer</a></nav>
+  </header>
+
+  <div class="hero">
+    <h1>Teach AI to write like you.</h1>
+    <p>AI Copy Trainer reads your own writing, writes down the rules of how you sound, and sharpens those rules every time you edit a draft.</p>
+    <a class="go" href="/">Open the trainer</a>
+  </div>
+
+  <section>
+    <h2>What it is</h2>
+    <p>It is a folder you keep on your computer. Inside it is one file that matters: <code>voice/VOICE.md</code>, your writing rules. Any AI tool that loads that file writes closer to you.</p>
+    <p>The rest of the folder exists to make that file better. It writes a draft, you fix it, and it works out which rule your fix was teaching.</p>
+    <figure>
+      <img src="/assets/demo.gif" alt="A draft email is edited, a note is added, and two new rules appear under it." width="1200" height="800">
+    </figure>
+  </section>
+
+  <section>
+    <h2>How it learns</h2>
+    <figure>
+      <img class="paper" src="/assets/loop.png" alt="Your writing becomes voice rules. The rules write a draft. Your edits go back into the rules." width="1600" height="560">
+      <img class="night" src="/assets/loop-night.png" alt="Your writing becomes voice rules. The rules write a draft. Your edits go back into the rules." width="1600" height="560">
+    </figure>
+    <ol class="steps">
+      <li><b>You give it your writing.</b> Ten to twenty pieces: posts that did well, emails friends answered, voice note transcripts. Rough is better than polished.</li>
+      <li><b>It writes your rules.</b> How long your sentences run, the words you reach for, the words you would never say, how you open, how you ask for the sale. Each rule comes with a quote from your own writing.</li>
+      <li><b>It writes a draft.</b> A tweet, a thread, a LinkedIn post, an Instagram caption, an email to your list, or a long paragraph. One arrives every morning, and the New draft button makes another whenever you want one.</li>
+      <li><b>You react.</b> Accept it, edit it, reject it, or ask for a rewrite with a note such as &quot;less formal&quot; or &quot;I would open with the story.&quot;</li>
+      <li><b>The rules change.</b> Your edit is compared with the draft. A change that would apply to future pieces becomes a rule. Every change is logged with the draft that caused it, so you can read exactly what it learned and when.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What a learned rule looks like</h2>
+    <p>You delete &quot;See you soon,&quot; from the end of an email and change &quot;the other day&quot; to &quot;on Wednesday.&quot; Two lines appear in your rules:</p>
+    <blockquote>Email: sign off with the first name alone.<br>Name the day. &quot;On Friday&quot; beats &quot;recently.&quot;</blockquote>
+    <p>The next draft follows both.</p>
+  </section>
+
+  <section>
+    <h2>Two ways to use it</h2>
+    <dl>
+      <dt>On this page</dt>
+      <dd>Run <code>node bin/trainer.mjs serve</code> and open <code>localhost:4747</code>. Paste your writing, press Build my voice rules, then press New draft. To look around first with a sample person and no AI account, run <code>node bin/trainer.mjs demo</code>.</dd>
+      <dt>Inside your own AI agent</dt>
+      <dd>Open the folder in Claude Code, Codex or any agent that reads files, and say &quot;Read AGENTS.md and start.&quot; The agent interviews you, builds the rules and brings you a draft. Keep one project or chat for it and come back to that chat each day.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Where your writing goes</h2>
+    <p>Your samples, drafts and rules are plain files in the <code>voice</code> folder on your computer. This page runs on your computer only. Your writing is sent to the AI model that writes the drafts, which is the one you already use, and to no one else. Nothing is posted for you.</p>
+  </section>
+
+  <section>
+    <h2>Who made it</h2>
+    <p>AI Copy Trainer is brought to you by <a href="https://gatori.ai">Gatori.ai</a>, where Nathaniel Solace teaches people to build their own tools with AI.</p>
+  </section>
+</main>
+<footer>
+  <img class="mark" src="/assets/gatori-enso.png" alt="" width="26" height="26">
+  <span>Brought to you by <a href="https://gatori.ai">Gatori.ai</a></span>
+</footer>
+</body>
+</html>

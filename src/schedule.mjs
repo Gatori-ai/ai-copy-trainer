@@ -1,4 +1,4 @@
-// Run "voice daily" every day, page open or closed.
+// Run "trainer daily" every day, page open or closed.
 // macOS: a LaunchAgent. Linux: a crontab line to paste. Windows: a Task Scheduler line.
 import { spawnSync } from 'node:child_process';
 import crypto from 'node:crypto';
@@ -9,7 +9,7 @@ import { REPO, home, loadConfig } from './store.mjs';
 
 function label() {
   const hash = crypto.createHash('sha1').update(home()).digest('hex').slice(0, 8);
-  return `com.daily-voice-training.${hash}`;
+  return `ai.gatori.copy-trainer.${hash}`;
 }
 
 function plistPath() {
@@ -59,7 +59,7 @@ export function plan({ time } = {}) {
   if (process.platform === 'win32') {
     return {
       kind: 'manual',
-      line: `schtasks /Create /SC DAILY /ST ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} /TN DailyVoiceTraining /TR "\\"${process.execPath}\\" \\"${script}\\" daily"`,
+      line: `schtasks /Create /SC DAILY /ST ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} /TN AICopyTrainer /TR "\\"${process.execPath}\\" \\"${script}\\" daily"`,
       hour,
       minute,
     };

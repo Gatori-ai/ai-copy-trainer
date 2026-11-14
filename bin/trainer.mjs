@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import * as store from '../src/store.mjs';
 import * as engine from '../src/engine.mjs';
 import { lint } from '../src/lint.mjs';
@@ -8,22 +10,23 @@ import * as schedule from '../src/schedule.mjs';
 import { serve } from '../src/server.mjs';
 import { resolveProvider } from '../src/writer.mjs';
 
-const HELP = `Daily Voice Training
+const HELP = `AI Copy Trainer
 
-  voice init [--name "Your Name"]        create the voice folder
-  voice foundation                       build voice/VOICE.md from context.md and samples/
-  voice draft [--format id] [--topic "..."]   write one draft now
-  voice list                             show drafts, newest first
-  voice show <id>                        print one draft
-  voice accept <id> [--file edited.txt] [--note "..."]
-  voice reject <id> --note "..."
-  voice rewrite <id> [--file edited.txt] --note "..."
-  voice daily [--force]                  today's draft, once per day, with a notification
-  voice serve [--port 4747]              the local page with the New draft button
-  voice schedule install [--time 08:00] [--dry-run]
-  voice schedule remove
-  voice check <file>                     mechanical check of any text against the rules
-  voice status
+  trainer init [--name "Your Name"]        create the voice folder
+  trainer foundation                       build voice/VOICE.md from context.md and samples/
+  trainer draft [--format id] [--topic "..."]   write one draft now
+  trainer list                             show drafts, newest first
+  trainer show <id>                        print one draft
+  trainer accept <id> [--file edited.txt] [--note "..."]
+  trainer reject <id> --note "..."
+  trainer rewrite <id> [--file edited.txt] --note "..."
+  trainer daily [--force]                  today's draft, once per day, with a notification
+  trainer serve [--port 4747]              the local page with the New draft button
+  trainer schedule install [--time 08:00] [--dry-run]
+  trainer schedule remove
+  trainer check <file>                     mechanical check of any text against the rules
+  trainer status
+  trainer demo [--port 4747]             try the page with a sample person and no model
 
 Formats: ${safeFormats()}
 `;
@@ -77,7 +80,7 @@ async function main() {
     case 'init': {
       const made = store.init({ name: typeof a.name === 'string' ? a.name : '' });
       console.log(made.length ? `Created in ${store.home()}: ${made.join(', ')}` : `Already set up at ${store.home()}.`);
-      console.log('Next: fill in context.md, put 10 to 20 pieces of your own writing in samples/, then run "voice foundation".');
+      console.log('Next: fill in context.md, put 10 to 20 pieces of your own writing in samples/, then run "trainer foundation".');
       break;
     }
     case 'foundation': {
@@ -123,6 +126,23 @@ async function main() {
       console.log(`Wrote ${r.item.id}. Notified by: ${sent.join(', ') || 'nothing'}.`);
       break;
     }
+    case 'demo': {
+      // A copy of demo/voice in a temp folder, written by the canned demo writer.
+      const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-copy-trainer-demo-'));
+      fs.cpSync(path.join(store.REPO, 'demo', 'voice'), dir, { recursive: true });
+      process.env.VOICE_HOME = dir;
+      store.init({ name: 'Maya' });
+      const config = store.loadConfig();
+      config.name = 'Maya';
+      config.formats = ['email-broadcast', 'instagram-caption'];
+      config.daily.enabled = false;
+      config.notify.desktop = false;
+      config.writer = { provider: 'command', model: null, command: `"${process.execPath}" "${path.join(store.REPO, 'demo', 'writer.mjs')}"` };
+      store.saveConfig(config);
+      console.log('Demo mode: a sample person, canned drafts, no model. Nothing here is saved.');
+      serve({ port: a.port });
+      break;
+    }
     case 'serve':
       serve({ port: a.port });
       break;
@@ -132,7 +152,7 @@ async function main() {
         console.log(r.removed ? `Removed ${r.file}.` : r.note || 'No schedule was installed.');
         break;
       }
-      if (a._[0] !== 'install') throw new Error('Use: voice schedule install | remove');
+      if (a._[0] !== 'install') throw new Error('Use: trainer schedule install | remove');
       const time = typeof a.time === 'string' ? a.time : undefined;
       const r = schedule.install({ time, dryRun: Boolean(a['dry-run']) });
       if (time) {

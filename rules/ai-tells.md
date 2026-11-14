@@ -4,7 +4,7 @@
 
 Readers recognize machine writing by a small set of habits. Every draft avoids all of them. A person's own `voice/VOICE.md` wins any conflict: a tell listed under its "Allowed exceptions" heading is allowed for that person.
 
-The same list lives in `ai-tells.json` for the mechanical check (`node bin/voice.mjs check <file>`).
+The same list lives in `ai-tells.json` for the mechanical check (`node bin/trainer.mjs check <file>`).
 
 ## Punctuation
 

@@ -4,65 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Daily Voice Training</title>
-<style>
-  :root {
-    --bg: #f6f3ec; --card: #fffdf8; --ink: #1d1b16; --soft: #5c574c; --line: #ddd6c6;
-    --accent: #1f5c4a; --accent-ink: #ffffff; --warn: #8a3b12; --good: #1f5c4a;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #14130f; --card: #1d1b16; --ink: #f5f2ea; --soft: #c2bcae; --line: #37332a;
-      --accent: #7fd1b5; --accent-ink: #10231c; --warn: #f0a878; --good: #7fd1b5;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  }
-  main { max-width: 780px; margin: 0 auto; padding: 28px 16px 96px; }
-  h1 { font-size: 22px; margin: 0 0 20px; letter-spacing: -0.2px; }
-  h2 { font-size: 17px; margin: 0 0 8px; }
-  label { display: block; font-size: 14px; color: var(--soft); margin: 14px 0 6px; }
-  input[type=text], select, textarea {
-    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
-    background: var(--card); color: var(--ink); font: inherit;
-  }
-  textarea { min-height: 150px; resize: vertical; }
-  textarea.piece { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 1.65; }
-  textarea.mono { font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; min-height: 420px; }
-  button {
-    font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 8px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--card); color: var(--ink);
-  }
-  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  button:disabled { opacity: 0.5; cursor: default; }
-  .bar { display: grid; grid-template-columns: 190px 1fr auto; gap: 8px; margin-bottom: 18px; }
-  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
-  .tabs button { border: 0; background: none; border-radius: 0; padding: 8px 12px; color: var(--soft); font-weight: 500; }
-  .tabs button[aria-selected=true] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
-  .meta { font-size: 14px; color: var(--soft); margin-bottom: 10px; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-  .learned { margin: 12px 0 0; padding: 0 0 0 18px; font-size: 15px; color: var(--good); }
-  .flag { color: var(--warn); font-size: 14px; margin-top: 8px; }
-  .status { position: sticky; top: 0; z-index: 2; padding: 10px 14px; margin-bottom: 16px; border-radius: 8px;
-    background: var(--accent); color: var(--accent-ink); font-weight: 600; }
-  .error { background: var(--warn); color: #fff; }
-  .checks { display: flex; flex-wrap: wrap; gap: 6px 16px; }
-  .checks label { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--ink); font-size: 15px; }
-  details { border-top: 1px solid var(--line); padding: 10px 0; }
-  summary { cursor: pointer; }
-  pre { white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; margin: 8px 0 0; }
-  .hint { font-size: 14px; color: var(--soft); margin: 6px 0 0; }
-  [hidden] { display: none !important; }
-  @media (max-width: 560px) { .bar { grid-template-columns: 1fr; } }
-</style>
+<title>AI Copy Trainer</title>
+<link rel="icon" type="image/png" href="/assets/gatori-enso.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/ink.css">
 </head>
 <body>
 <main>
-  <h1>Daily Voice Training</h1>
+  <header class="top">
+    <img class="mark" src="/assets/gatori-enso.png" alt="" width="44" height="44">
+    <a class="name" href="/">AI Copy Trainer<i>.</i></a>
+    <nav><a href="/about">About</a></nav>
+  </header>
   <div id="status" class="status" role="status" hidden></div>
 
   <section id="setup" hidden>
@@ -107,6 +61,10 @@
     <div id="tab-log" hidden><pre id="l-text"></pre></div>
   </section>
 </main>
+<footer>
+  <img class="mark" src="/assets/gatori-enso.png" alt="" width="26" height="26">
+  <span>Brought to you by <a href="https://gatori.ai">Gatori.ai</a></span>
+</footer>
 
 <script>
   var state = null;

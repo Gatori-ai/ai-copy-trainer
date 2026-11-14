@@ -1,4 +1,5 @@
 // The local page. Listens on 127.0.0.1 only.
+import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import * as store from './store.mjs';
@@ -6,6 +7,16 @@ import * as engine from './engine.mjs';
 import { notify } from './notify.mjs';
 
 const { p, read, REPO } = store;
+
+// The only files the page can ask for.
+const STATIC = {
+  '/about': ['web/about.html', 'text/html; charset=utf-8'],
+  '/ink.css': ['web/ink.css', 'text/css; charset=utf-8'],
+  '/assets/gatori-enso.png': ['assets/gatori-enso.png', 'image/png'],
+  '/assets/loop.png': ['assets/loop.png', 'image/png'],
+  '/assets/loop-night.png': ['assets/loop-night.png', 'image/png'],
+  '/assets/demo.gif': ['assets/demo.gif', 'image/gif'],
+};
 
 function send(res, code, body, type = 'application/json; charset=utf-8') {
   const text = typeof body === 'string' ? body : JSON.stringify(body);
@@ -116,6 +127,12 @@ export function createServer({ complete } = {}) {
       if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
         return send(res, 200, read(path.join(REPO, 'web', 'index.html')), 'text/html; charset=utf-8');
       }
+      if (req.method === 'GET' && STATIC[url.pathname]) {
+        const [file, type] = STATIC[url.pathname];
+        const data = fs.readFileSync(path.join(REPO, file));
+        res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
+        return res.end(data);
+      }
       const handler = routes[`${req.method} ${url.pathname}`];
       if (!handler) return send(res, 404, { error: 'Not found.' });
       const input = req.method === 'POST' ? await body(req) : {};
@@ -163,11 +180,11 @@ export function serve({ port } = {}) {
   server.headersTimeout = 60_000;
   server.timeout = 0;
   server.listen(usePort, '127.0.0.1', () => {
-    console.log(`Daily Voice Training is at http://localhost:${usePort}/`);
+    console.log(`AI Copy Trainer is at http://localhost:${usePort}/`);
     console.log(`Voice folder: ${store.home()}`);
   });
   server.on('error', (e) => {
-    console.error(e.code === 'EADDRINUSE' ? `Port ${usePort} is taken. Run: voice serve --port <other>` : e.message);
+    console.error(e.code === 'EADDRINUSE' ? `Port ${usePort} is taken. Run: trainer serve --port <other>` : e.message);
     process.exit(1);
   });
   startDailyTick({ port: usePort });

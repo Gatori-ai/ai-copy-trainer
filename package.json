@@ -1,13 +1,13 @@
 {
-  "name": "daily-voice-training",
+  "name": "ai-copy-trainer",
   "version": "0.1.0",
   "private": true,
   "description": "Builds writing and voice rules that sound like one person, from their samples and their edits to daily drafts.",
   "type": "module",
-  "bin": { "voice": "bin/voice.mjs" },
+  "bin": { "trainer": "bin/trainer.mjs" },
   "engines": { "node": ">=20" },
   "scripts": {
-    "start": "node bin/voice.mjs serve",
+    "start": "node bin/trainer.mjs serve",
     "test": "node --test test/*.test.mjs"
   },
   "optionalDependencies": {

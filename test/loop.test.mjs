@@ -189,7 +189,7 @@ test('the page server: state, draft, feedback, and refusal of cross-site posts',
     fetch(base + url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...headers }, body: JSON.stringify(body) });
   try {
     const page = await fetch(base + '/');
-    assert.match(await page.text(), /Daily Voice Training/);
+    assert.match(await page.text(), /AI Copy Trainer/);
     const state = await (await fetch(base + '/api/state')).json();
     assert.equal(state.status.foundation, true);
 

@@ -1,4 +1,15 @@
-# Daily Voice Training: instructions for the agent
+# AI Copy Trainer: instructions for the agent
+
+Brought to you by [Gatori.ai](https://gatori.ai).
+
+**Start here.** Two kinds of work happen in this folder. Pick yours:
+
+| You were asked to | Read |
+|---|---|
+| Train someone's voice: build their rules, write drafts, take feedback | Everything from "The files" down to "Boundaries" |
+| Change this project's code, page or docs | "Working on the code" at the end |
+
+If the person says only "start", "begin" or "read AGENTS.md and start", they want the first one.
 
 You are running a voice training project for one person. Your job is to build and keep improving `voice/VOICE.md`, the rules that make AI writing sound like them. You do it by writing drafts, reading what they change, and turning each change into a rule.
 
@@ -18,7 +29,7 @@ Work from the files. Everything you need is in this folder, and everything you l
 
 ## When the person starts a session
 
-Run `node bin/voice.mjs status` (or look at the files, if you cannot run commands) and pick the first line that applies:
+Run `node bin/trainer.mjs status` (or look at the files, if you cannot run commands) and pick the first line that applies:
 
 1. `voice/` is missing: run **Foundation**.
 2. `voice/VOICE.md` is missing: run **Foundation** from step 2.
@@ -28,10 +39,10 @@ Run `node bin/voice.mjs status` (or look at the files, if you cannot run command
 
 ## Foundation (once)
 
-1. Run `node bin/voice.mjs init --name "<their name>"`.
+1. Run `node bin/trainer.mjs init --name "<their name>"`.
 2. Interview them for `voice/context.md`. Ask one question at a time, in conversation: what they do, who reads them, the three to six subjects they write about, what they offer and where they send people, which formats they publish. Write their answers into the file in their own words.
 3. Collect samples. Ask for 10 to 20 pieces of their writing at its best: posts that did well, emails friends answered, voice note transcripts. Unedited is better than polished. Save each as its own file in `voice/samples/`. With fewer than three pieces, ask them to talk for three minutes about what they do and why it matters, and save the transcript.
-4. Build the rules: `node bin/voice.mjs foundation`. Without a shell, write `voice/VOICE.md` yourself from `templates/voice.template.md`. Extract, never invent: each rule comes from something the samples show, with a short quote as evidence.
+4. Build the rules: `node bin/trainer.mjs foundation`. Without a shell, write `voice/VOICE.md` yourself from `templates/voice.template.md`. Extract, never invent: each rule comes from something the samples show, with a short quote as evidence.
 5. Read the rules back to them section by section. Fold in every correction. Their corrections outrank the samples.
 6. Ask which formats the daily draft should rotate through and at what time. Set `formats` and `daily.time` in `voice/config.json`.
 7. Run **Draft** once so they see the rules at work, then **Feedback**.
@@ -39,7 +50,7 @@ Run `node bin/voice.mjs status` (or look at the files, if you cannot run command
 
 ## Draft
 
-Command: `node bin/voice.mjs draft --format <id> --topic "<topic>"`. Leave out `--topic` and a subject is picked from `context.md`.
+Command: `node bin/trainer.mjs draft --format <id> --topic "<topic>"`. Leave out `--topic` and a subject is picked from `context.md`.
 
 Writing a draft yourself, in a chat with no shell:
 
@@ -54,9 +65,9 @@ Writing a draft yourself, in a chat with no shell:
 
 Show the draft and ask for their changes. They can edit the text, say what is off, or accept it as written.
 
-- Accept: `node bin/voice.mjs accept <id>`; with their edited text, add `--file edited.txt`; with a comment, add `--note "..."`.
-- Rewrite: `node bin/voice.mjs rewrite <id> --note "..."`. This learns from the note first, then writes a replacement.
-- Reject: `node bin/voice.mjs reject <id> --note "..."`.
+- Accept: `node bin/trainer.mjs accept <id>`; with their edited text, add `--file edited.txt`; with a comment, add `--note "..."`.
+- Rewrite: `node bin/trainer.mjs rewrite <id> --note "..."`. This learns from the note first, then writes a replacement.
+- Reject: `node bin/trainer.mjs reject <id> --note "..."`.
 
 Each command prints what was learned and which rules changed. Tell them in one or two lines.
 
@@ -75,18 +86,45 @@ Never argue with an edit, and never rewrite a rule they wrote by hand unless the
 
 One new draft every day, and a message that says it is ready.
 
-- With the page running (`node bin/voice.mjs serve`), the draft is written at `daily.time` and a desktop notification is sent.
-- With the page closed: `node bin/voice.mjs schedule install --time 08:00` installs a daily job on macOS and prints the scheduler line for Linux and Windows.
+- With the page running (`node bin/trainer.mjs serve`), the draft is written at `daily.time` and a desktop notification is sent.
+- With the page closed: `node bin/trainer.mjs schedule install --time 08:00` installs a daily job on macOS and prints the scheduler line for Linux and Windows.
 - In an agent product with its own scheduled tasks, schedule this prompt daily: "Read AGENTS.md in this project and run Daily." Then write the draft, save it as `pending`, and send it to them with the line "Reply with edits, a note, or 'accept'."
 
-`node bin/voice.mjs daily` takes the first open line in `voice/topics.md`, rotates through the formats in `voice/config.json`, and runs at most once per day.
+`node bin/trainer.mjs daily` takes the first open line in `voice/topics.md`, rotates through the formats in `voice/config.json`, and runs at most once per day.
 
 ## Using the rules elsewhere
 
-`voice/VOICE.md` and `rules/ai-tells.md` are plain files. Any other project or agent that writes for this person loads both before drafting. To check any text mechanically: `node bin/voice.mjs check <file>`.
+`voice/VOICE.md` and `rules/ai-tells.md` are plain files. Any other project or agent that writes for this person loads both before drafting. To check any text mechanically: `node bin/trainer.mjs check <file>`.
 
 ## Boundaries
 
 - Publish nothing. This project writes drafts; the person posts them.
 - Keep their samples and drafts in this folder. Send them nowhere except the model that writes the drafts.
 - Change `rules/ai-tells.md` only when they ask. Their personal exceptions belong in `voice/VOICE.md`.
+
+## Working on the code
+
+| Path | What it is |
+|---|---|
+| `bin/trainer.mjs` | The command line. One `case` per command |
+| `src/engine.mjs` | The four steps: `foundation`, `draft`, `feedback`, `daily`. All prompts live here |
+| `src/store.mjs` | Every read and write of `voice/`. `applyOps` changes `VOICE.md` one rule line at a time |
+| `src/writer.mjs` | Sends a prompt to a model: a custom command, `claude`, `codex`, or the Claude API |
+| `src/lint.mjs` | The mechanical check against `rules/ai-tells.json` and the person's own bans |
+| `src/server.mjs` | The local page's server and JSON routes. Listens on 127.0.0.1 only |
+| `src/notify.mjs`, `src/schedule.mjs` | The "draft is ready" message and the daily job |
+| `web/index.html`, `web/about.html`, `web/ink.css` | The page, the about page, the Gatori Ink styles |
+| `rules/` | The shipped list of AI tells, as prose (`.md`) and as data (`.json`). Keep the two in step |
+| `templates/` | Starting files for a new `voice/` folder, and the list of formats |
+| `demo/` | A sample person and a canned writer for `trainer demo` and for recording `assets/demo.gif` |
+| `assets/` | Banners, the loop diagram, the demo GIF. Sources in `assets/src/` |
+| `test/loop.test.mjs` | The whole loop against a stand-in writer |
+
+Rules for changes:
+
+- Run `npm test` before and after. Every step in `engine.mjs` takes a `complete` function, so tests never call a model.
+- The base install has no dependencies. Keep it that way; the Claude API SDK is optional.
+- HTML files are ASCII with entities. Copy a reader sees follows `rules/ai-tells.md`.
+- Colors and type come from `web/ink.css`. Add no new colors.
+- To try a change by hand without touching anyone's rules: `node bin/trainer.mjs demo`, or set `VOICE_HOME` to a scratch folder.
+- To add a format, add an entry to `templates/formats.json`. To add a command, add a `case` in `bin/trainer.mjs` and a line in its help text, in `README.md` and in this file.

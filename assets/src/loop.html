@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../web/ink.css">
+<style>
+  html, body { width: 1600px; height: 560px; overflow: hidden; }
+  svg { display: block; }
+  .box { fill: var(--paper); stroke: var(--line-strong); stroke-width: 1.5; }
+  .hot { stroke: var(--red); stroke-width: 2.5; }
+  .t { font: 500 40px var(--serif); fill: var(--ink); text-anchor: middle; }
+  .s { font: 400 25px var(--serif); fill: var(--muted); text-anchor: middle; font-style: italic; }
+  .a { stroke: var(--ink); stroke-width: 2.5; fill: none; }
+  .r { stroke: var(--red); stroke-width: 2.5; fill: none; }
+  .rl { font: italic 400 28px var(--serif); fill: var(--red); text-anchor: middle; }
+</style></head>
+<body>
+<svg width="1600" height="560" viewBox="0 0 1600 560" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="h" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1,1 L10,6 L1,11" fill="none" stroke="#1b1a17" stroke-width="2" class="mh"/></marker>
+    <marker id="hr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M1,1 L10,6 L1,11" fill="none" stroke="#c23b25" stroke-width="2" class="mr"/></marker>
+  </defs>
+  <rect class="box" x="70" y="150" width="300" height="170" rx="4"/>
+  <text class="t" x="220" y="228">Your writing</text><text class="s" x="220" y="272">10 to 20 pieces</text>
+  <rect class="box hot" x="460" y="150" width="300" height="170" rx="4"/>
+  <text class="t" x="610" y="228">Voice rules</text><text class="s" x="610" y="272">VOICE.md</text>
+  <rect class="box" x="850" y="150" width="300" height="170" rx="4"/>
+  <text class="t" x="1000" y="228">A draft</text><text class="s" x="1000" y="272">every day, or on demand</text>
+  <rect class="box" x="1240" y="150" width="300" height="170" rx="4"/>
+  <text class="t" x="1390" y="228">Your edits</text><text class="s" x="1390" y="272">accept, change, reject</text>
+  <path class="a" d="M370,235 L452,235" marker-end="url(#h)"/>
+  <path class="a" d="M760,235 L842,235" marker-end="url(#h)"/>
+  <path class="a" d="M1150,235 L1232,235" marker-end="url(#h)"/>
+  <path class="r" d="M1390,320 C1390,470 610,470 610,330" marker-end="url(#hr)"/>
+  <text class="rl" x="1000" y="478">each edit becomes a rule</text>
+  <text class="s" x="800" y="80" style="font-size:30px">The rules get sharper every time you correct a draft.</text>
+</svg>
+<script>if (location.hash !== '#night') { var p = document.createElement('style'); p.textContent = ':root{--pearl:#f2ece0;--paper:#f8f4ea;--ink:#1b1a17;--body:#3d3a33;--muted:#6e675b;--red:#c23b25;--line:rgba(27,26,23,.14);--line-strong:rgba(27,26,23,.28);--on-red:#fffdf9;color-scheme:light}.mark{filter:none}'; document.head.appendChild(p); }</script>
+<script>if (location.hash === '#night') { var s = document.createElement('style'); s.textContent = ':root{--pearl:#151412;--paper:#1d1c19;--ink:#f2ece0;--body:#d6cfc1;--muted:#a59d8f;--red:#e0553a;--line-strong:rgba(242,236,224,.26)}.mh{stroke:#f2ece0}.mr{stroke:#e0553a}'; document.head.appendChild(s); }</script>
+</body></html>
