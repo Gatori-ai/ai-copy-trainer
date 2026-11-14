@@ -178,6 +178,9 @@ test('schedule plan is a valid job for this platform', () => {
   assert.equal(job.minute, 30);
   if (job.kind === 'launchd') assert.match(job.content, /<string>daily<\/string>/);
   else assert.match(job.line, /daily/);
+  const scripts = (job.content || job.line).match(/[^\s"<>]+\.mjs/g) || [];
+  assert.ok(scripts.length, 'the job names a script');
+  for (const s of scripts) assert.ok(fs.existsSync(s), `the job's script exists: ${s}`);
   assert.throws(() => schedule.plan({ time: '25:00' }), /not a time/);
 });
 

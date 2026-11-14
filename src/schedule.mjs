@@ -27,7 +27,7 @@ const xml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export function plan({ time } = {}) {
   const config = loadConfig();
   const { hour, minute } = parseTime(time || config.daily.time);
-  const script = path.join(REPO, 'bin', 'voice.mjs');
+  const script = path.join(REPO, 'bin', 'trainer.mjs');
   const logFile = path.join(home(), '.server.log');
   if (process.platform === 'darwin') {
     const plist = `<?xml version="1.0" encoding="UTF-8"?>
