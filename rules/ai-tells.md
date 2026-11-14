@@ -15,7 +15,7 @@ The same list lives in `ai-tells.json` for the mechanical check (`node bin/train
 
 ## Words
 
-delve, tapestry, landscape, realm, crucial, pivotal, nuanced, multifaceted, intricate, paradigm, leverage, robust, comprehensive, seamless, frictionless, foster, facilitate, underscore, encompass, embark, unlock, unleash, game-changing, revolutionary, transform, empower, elevate, supercharge, resonate, moreover, furthermore, indeed, notably
+delve, tapestry, landscape, realm, crucial, pivotal, nuanced, multifaceted, intricate, paradigm, leverage, robust, comprehensive, seamless, frictionless, foster, facilitate, underscore, encompass, embark, unlock, unleash, game-changing, game-changer, fast-paced, revolutionary, transform, empower, elevate, supercharge, resonate, moreover, furthermore, indeed, notably
 
 ## Phrases
 
